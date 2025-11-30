@@ -30,10 +30,10 @@ Interface para upload de PDFs, exibição dos dados extraídos e persistência.
 
 # 1. Inicialização do Projeto
 
-## Passo 1 — Clonar o repositório
+## Passo 1 — Clonar o repositório (CORRIGIDO)
 
-git clone [https://github.com/GuilhermeLimaUniRV/nf-organizer](https://github.com/GuilhermeLimaUniRV/nf-organizer)
-cd nf-organizer-fullstack
+git clone [https://github.com/Vesguin/organizer](https://github.com/Vesguin/organizer)
+cd organizer
 
 ---
 
