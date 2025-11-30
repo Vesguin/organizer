@@ -1,83 +1,88 @@
-Com certeza. Vou gerar a versão final e clara do seu `README.md`, enfatizando a seção **`2. Configurar Variáveis de Ambiente`** para que quem clonar o projeto saiba exatamente o que colocar no arquivo `.env`.
+# NF Organizer Full Stack (Etapa N2 – Persistência)
 
------
+Este projeto é uma aplicação Full Stack conteinerizada para extração, verificação e persistência de dados de Notas Fiscais (PDF → JSON → Banco de Dados).
+Inclui extração com o Gemini, checagem de existência no banco via Prisma e persistência completa conforme requisitos da Atividade N2.
 
-# NF Organizer Full Stack (Etapa N2 - Persistência)
+---
 
-Este projeto é uma aplicação Full Stack conteinerizada focada na **extração e persistência de dados de Notas Fiscais**.
+## Arquitetura
 
-Ele implementa os requisitos da **Atividade N2**, incluindo consultas de existência no Banco de Dados (DB) antes do lançamento financeiro.
+O projeto utiliza Docker Compose para três serviços principais:
 
-## ⚙️ Arquitetura de Serviços
+**1. Backend – Node.js/Express**
+API REST, agentes Gemini, validação e persistência via Prisma ORM.
 
-O ambiente é orquestrado pelo Docker Compose e consiste em três serviços interligados:
+**2. Database – PostgreSQL 16**
+Banco relacional usado para armazenar fornecedores, faturados, despesas e movimentos.
 
-1.  **`backend` (Node.js/Express):** API RESTful, lógica do **Agente Gemini**, e camada de persistência (Prisma).
-2.  **`database` (PostgreSQL 16):** Servidor de banco de dados para persistir os movimentos financeiros.
-3.  **`frontend` (React/Vite):** Interface de usuário para upload de PDFs e fluxo de persistência de 3 etapas.
+**3. Frontend – React + Vite**
+Interface para upload de PDFs, exibição dos dados extraídos e persistência.
 
-## 📋 Pré-requisitos
+---
 
-Para rodar este projeto, você precisa ter:
+## Pré-requisitos
 
-1.  **Git:** Para clonar o repositório.
-2.  **Docker Desktop:** Instalado e rodando (essencial para o Docker Compose).
-3.  **Chave de API do Gemini:** (Necessário criar uma chave válida no Google AI Studio).
+* Git
+* Docker Desktop
+* Chave de API válida do Gemini (Google AI Studio)
 
-## 1\. Guia de Inicialização
+---
 
-Siga estes passos exatos para subir a aplicação completa:
+# 1. Inicialização do Projeto
 
-### Passo 1: Clonar e Navegar
+## Passo 1 — Clonar o repositório
 
-```bash
-git clone https://github.com/GuilhermeLimaUniRV/nf-organizer
+git clone [https://github.com/GuilhermeLimaUniRV/nf-organizer](https://github.com/GuilhermeLimaUniRV/nf-organizer)
 cd nf-organizer-fullstack
-```
 
-### Passo 2: Configurar Variáveis de Ambiente (CRUCIAL)
+---
 
-Você deve **criar um arquivo chamado `.env`** na **raiz** do repositório, no mesmo nível do `docker-compose.yml`.
+## Passo 2 — Criar o arquivo `.env`
 
-O conteúdo deve ser **exatamente** o seguinte (substituindo apenas a chave Gemini real):
+Crie um arquivo chamado `.env` na raiz do projeto com o conteúdo abaixo:
 
-```
-# .env (CRIE ESTE ARQUIVO NA RAIZ)
-
-# --- Variáveis de API e Configuração de Porta ---
-GEMINI_API_KEY="SUA_CHAVE_DE_API_GEMINI_AQUI" 
+GEMINI_API_KEY="SUA_CHAVE_AQUI"
 PORT=3000
-
-# --- Credenciais do PostgreSQL (Não altere os nomes) ---
 POSTGRES_USER=postgres_nf_user
 POSTGRES_PASSWORD=nf_dev_2025
 POSTGRES_DB=nf_db
-```
 
-### Passo 3: Subir a Aplicação (Build & Run Automático)
+---
 
-Este é o **comando único** que constrói as imagens, inicia todos os serviços e **aplica as migrações** do banco de dados automaticamente:
+## Passo 3 — Subir toda a aplicação (Build + Run + Migrações)
 
-```bash
 docker compose up -d --build
-```
 
-## 2\. Acesso e Fluxo de Trabalho (N2)
+---
 
-Após a migração ser aplicada automaticamente, o sistema está pronto para ser testado:
+# 2. Acesso aos Serviços
 
-  * **Frontend (Interface):** `http://localhost:5173`
-  * **Backend (API):** `http://localhost:3000`
+Frontend: [http://localhost:5173](http://localhost:5173)
+Backend (API): [http://localhost:3000](http://localhost:3000)
 
-### Fluxo de Uso:
+---
 
-1.  **Extração (Botão 1):** O frontend envia o PDF para o Backend (`/processar-nf`) e recebe o JSON.
-2.  **Verificação (Automático):** O sistema exibe o status de existência no DB (`EXISTE` ou `NÃO EXISTE`) para Fornecedor, Faturado e Despesa.
-3.  **Persistência (Botão 2):** O botão "Salvar Movimento" envia os dados para `/persistir-movimento`, lançando os registros no PostgreSQL.
+# 3. Fluxo de Uso da Etapa N2
 
-## 3\. Gerenciamento do Ambiente
+1. O usuário envia o PDF pelo frontend.
+2. O backend extrai dados com o Gemini e retorna um JSON estruturado.
+3. O sistema verifica automaticamente se os registros já existem no banco.
+4. O botão “Salvar Movimento” persiste o movimento no PostgreSQL via Prisma.
 
-  * **Verificar logs:** `docker compose logs -f`
-  * **Parar os serviços:** `docker compose stop`
-  * **Limpeza Total (Parar e Remover tudo):** `docker compose down -v`
-  * **Acessar o DB (pgAdmin):** Host: `localhost`, Porta: `5445`, e com os dados que vc definiu no seu .env.
+---
+
+# 4. Comandos Úteis
+
+**Ver logs:**
+docker compose logs -f
+
+**Parar todos os serviços:**
+docker compose stop
+
+**Reset completo (containers + volumes):**
+docker compose down -v
+
+**Acessar o banco no pgAdmin ou outro cliente:**
+Host: localhost
+Porta: 5445
+Usuário e senha: iguais aos do arquivo `.env`
