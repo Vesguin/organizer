@@ -1,0 +1,91 @@
+:root {
+  /* Tipografia base */
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Variáveis de tema (Claro) */
+  --bg: #ffffff;
+  --text: #213547;
+  --muted: #666666;
+  --card-bg: #ffffff;
+  --border: #eaeaea;
+  --surface: #f7f7f7;
+  --primary: #0056b3;
+  --primary-contrast: #ffffff;
+  --accent: #646cff;
+  --button-bg: var(--primary);
+  --button-disabled-bg: #a9c6e8;
+  --shadow: rgba(0, 0, 0, 0.1);
+
+  /* Preferência do sistema reportada ao navegador */
+  color-scheme: light dark;
+  color: var(--text);
+  background-color: var(--bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tema Escuro explícito via data-theme */
+[data-theme="dark"] {
+  --bg: #121212;
+  --text: #e5e7eb;
+  --muted: #cbd5e1;
+  --card-bg: #18181b;
+  --border: #2f3136;
+  --surface: #202225;
+  --primary: #3b82f6;
+  --primary-contrast: #ffffff;
+  --accent: #8aa2ff;
+  --button-bg: var(--primary);
+  --button-disabled-bg: #1f3b70;
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+a {
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: inherit;
+}
+a:hover {
+  opacity: 0.9;
+}
+
+body {
+  margin: 0;
+  display: block;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--button-bg);
+  color: var(--primary-contrast);
+  cursor: pointer;
+  transition: opacity 0.25s, border-color 0.25s;
+}
+button:hover {
+  opacity: 0.95;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Removemos overrides do prefers-color-scheme para priorizar data-theme explícito */

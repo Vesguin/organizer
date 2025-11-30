@@ -1,0 +1,71 @@
+version: '3.8' 
+
+services:
+  # 1. SERVIÇO BACKEND (Node.js/API)
+  backend:
+    build:
+      context: ./nf-organizer-backend
+      dockerfile: Dockerfile
+    container_name: nf_backend_dev
+    ports:
+      - "3000:3000" 
+    env_file:
+      - .env 
+    volumes:
+      - ./nf-organizer-backend:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev 
+    # NOVO: Adiciona a dependência para o banco de dados
+    depends_on:
+      - database 
+    # NOVO: Injeta a URL de conexão do banco de dados no Backend (para o Prisma)
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+
+  # 2. SERVIÇO FRONTEND (React/Vite)
+  frontend:
+    build:
+      context: ./nf-organizer-frontend # Procura o Dockerfile dentro desta pasta
+      dockerfile: Dockerfile
+    container_name: nf_frontend_dev
+    
+    # Mapeia a porta do React/Vite (ex: 5173) para o host (3000, 5173, etc.)
+    ports:
+      - "5173:5173" 
+    
+    # Monta o código para Hot Reload do Frontend
+    volumes:
+      - ./nf-organizer-frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    
+    # O frontend se comunica com o backend usando o nome do serviço: http://backend:3000
+    environment:
+      # Define a URL do backend para o React usar no fetch()
+      VITE_API_URL: http://backend:3000 
+    
+    # Comando de inicialização do React/Vite
+    command: npm run dev
+    
+  # 3. NOVO SERVIÇO: BANCO DE DADOS (PostgreSQL)
+  database:
+    image: pgvector/pgvector:pg16 # Imagem com pgvector baseada em PostgreSQL 16
+    container_name: nf_postgres_db
+    restart: always 
+    
+    # Variáveis de ambiente para o PostgreSQL (lidas do arquivo .env da raiz)
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    
+    ports:
+      - "5445:5432" # Porta para acesso externo (opcional)
+    
+    # VOLUME: Garante que os dados sejam salvos e persistam entre reinicializações
+    volumes:
+      - postgres_data:/var/lib/postgresql/data 
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+
+# NOVO: Declaração do volume no fim do arquivo
+volumes:
+  postgres_data:
